@@ -1,10 +1,19 @@
-import './App.css';
+import React from 'react'
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import CreateSongs from './component/CreateSongs';
+import SongsContainer from './component/SongsContainer';
 
-function App() {
+const  App = () => {
   return (
-    <div className="App">
-      <h1>Frone end fro addis software</h1>
-    </div>
+    <Router>
+      <div>
+      <h1>Music App</h1>
+        <Routes>
+          <Route exact path="/" element={<SongsContainer/>} />
+          <Route path="/create-songs" element={<CreateSongs />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
