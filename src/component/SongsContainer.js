@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import history from "../helper/history";
 import ListItemContainer from "../ListItemContainer";
 import CreateSongForm from "./CreateSongForm";
 import EditSongForm from "./EditSongForm";
@@ -12,10 +13,10 @@ const SongsContainer = () => {
   const [currentSong, setCurrentSong] = useState({name: '', artist: '', genre: []})
   useEffect(() => {
     axios
-      .get("http://localhost:4000/songs/list")
+      .get("http://localhost:4000/api/v1/songs/list")
       .then((res) => setSongs(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  },[]);
 
   const handleCreateNewAlbumClick = () => {
     setCreatingNewSong(true);
@@ -32,6 +33,7 @@ const SongsContainer = () => {
 
   const renderNewSongForm= ()=>{
     if (creatingNewSong) {
+        // history.push('/create-songs')
         return <CreateSongForm handleCancel={handleCancelFormClick}/>;
     }
 }

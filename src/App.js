@@ -7,7 +7,6 @@ const  App = () => {
   return (
     <Router>
       <div>
-      <h1>Music App</h1>
         <Routes>
           <Route exact path="/" element={<SongsContainer/>} />
           <Route path="/create-songs" element={<CreateSongs />} />

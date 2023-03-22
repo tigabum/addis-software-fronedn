@@ -7,24 +7,26 @@ import GenreFormItem from "./GenreFormItem";
 const CreateSongForm = (props) => {
   const [name, setName] = useState("");
   const [artist, setArtist] = useState("");
-  const [genres, setGenres] = useState([]);
+  const [genre, setGenres] = useState("");
+  const [album, setAlbum] = useState("")
+
   const [databaseArtists, setDatabaseArtists] = useState([]);
   const [databaseGenres, setDatabaseGenres] = useState([]);
   const [created, setCreated] = useState(false);
   const [creationMessage, setCreationMessage] = useState("");
-  const Navigate = useNavigate()
+  const navigate = useNavigate()
 
   let _genreHelper = [];
 
   useEffect(() => {
-    axios.get("http://localhost:4000/artist/list").then((response) => {
+    axios.get("http://localhost:4000/api/v1/artist/list").then((response) => {
       setDatabaseArtists(response.data|| []);
     });
 
-    axios.get("http://localhost:4000/genre/list").then((response) => {
+    axios.get("http://localhost:4000/api/v1/genre/list").then((response) => {
       setDatabaseGenres(response.data|| []);
     });
-  });
+  },[]);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -34,76 +36,34 @@ const CreateSongForm = (props) => {
     setArtist(event.target.value);
   };
 
-  const handleGenreChange = (genreId, isChecked) => {
-    if (isChecked) {
-      let genres = [..._genreHelper, genreId];
-      _genreHelper = [...genres];
-    } else {
-      //!isChecked
-      let genres = [..._genreHelper];
-      let genreToBeRemovedIndex = genres.indexOf(genreId);
-      genres.splice(genreToBeRemovedIndex, 1);
-      _genreHelper = genres;
-    }
-  };
+  const handlGenreChange = (event) => {
+      setGenres(event.target.value)
+  }
 
-  const setGenresToState = () => {
-    setGenres(_genreHelper);
-  };
-
-  const convertGenreArrayToString = (genres) => {
-    return genres.join(",");
-  };
+  const handleAlbumChange = (event) => {
+      setAlbum(event.target.value)
+  }
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
 
     axios
-      .post("http://localhost:4000/songs/create", {
-        name: name,
-        artist: artist || 'aritstone',
-        genre: convertGenreArrayToString(genres)|| [],
+      .post("http://localhost:4000/api/v1/songs/create", {
+        title: name,
+        Artist: artist,
+        Genre: genre,
+        Album:album
       })
       .then((response) => {
+          console.log('response is', response)
           setName('')
+          setAlbum('')
+          setArtist('')
+          setGenres('')
         setCreated(true);
         setCreationMessage(response.data.message);
-      });
-  };
-
-  const renderArtistSelect = () => {
-    return (
-      <select value={artist} onChange={handleArtistChange}>
-        {databaseArtists.map((artist) => {
-          return (
-            <option key={artist.id} value={artist.id}>
-              {artist.name}
-            </option>
-          );
-        })}
-      </select>
-    );
-  };
-
-  const renderGenreCheckboxes = () => {
-    return (
-      <label>
-        Genres:
-        {databaseGenres.map((genre) => {
-          return (
-            <GenreFormItem
-              key={genre.id}
-              genre={genre}
-              checked={false}
-              handleCheck={handleGenreChange}
-            />
-          );
-        })}
-        <button type="button" onClick={setGenresToState}>
-          Update Genres
-        </button>
-      </label>
-    );
+        navigate('/')
+    });
   };
 
   const renderCreationMessage = () => {
@@ -119,11 +79,24 @@ const CreateSongForm = (props) => {
           Name:
           <input type="text" value={name} onChange={handleNameChange} />
         </label>
-        {/* <label>
+        <label>
           Artist:
-          {renderArtistSelect()}
+          <input type="text" value={artist} onChange={handleArtistChange} />
+
+          {/* {renderArtistSelect()} */}
         </label>
-        {renderGenreCheckboxes()} */}
+        <label>
+          Album:
+          <input type="text" value={album} onChange={handleAlbumChange} />
+
+        {/* {renderGenreCheckboxes()} */}
+        </label>
+        <label>
+          Genre:
+          <input type="text" value={genre} onChange={handlGenreChange} />
+
+        {/* {renderGenreCheckboxes()} */}
+        </label>
 
         <input type="submit" value="Submit" className="padding-right" />
         <button onClick={props.handleCancel}>Cancel</button>
