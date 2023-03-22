@@ -46,7 +46,7 @@ const renderEditSongForm= ()=> {
 
   const songsList =
     songs.length === 0 ? (
-      "there is no song record!"
+      "there is no song record in the databases!"
     ) : (
       <ListItemContainer
         type={"songs"}
